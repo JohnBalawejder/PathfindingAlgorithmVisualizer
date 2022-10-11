@@ -1,11 +1,15 @@
+# Imports
 import pygame
 import math
 from queue import PriorityQueue
 
+# Window Intialization
 WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("A* Path Finding Algorithm")
 
+
+# Colours
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 255, 0)
@@ -17,6 +21,7 @@ ORANGE = (255, 165 ,0)
 GREY = (128, 128, 128)
 TURQUOISE = (64, 224, 208)
 
+# Class to manage and draw nodes onto the screen
 class node:
 	def __init__(self, row, column, width, total_rows):
 		self.row = row
@@ -87,13 +92,13 @@ class node:
 	def __lt__(self, other):
 		return False
 
-
+# Heuristic Function
 def h(p1, p2):
 	x1, y1 = p1
 	x2, y2 = p2
 	return abs(x1 - x2) + abs(y1 - y2)
 
-
+# Draws best path to node
 def reconstruct_path(came_from, current, draw):
 	while current in came_from:
 		current = came_from[current]
@@ -146,7 +151,7 @@ def algorithm(draw, grid, start, end):
 
 	return False
 
-
+# Creates grid of nodes
 def make_grid(rows, width):
 	grid = []
 	gap = width // rows
@@ -158,7 +163,7 @@ def make_grid(rows, width):
 
 	return grid
 
-
+# Draws grid of nodes
 def draw_grid(win, rows, width):
 	gap = width // rows
 	for i in range(rows):
@@ -166,18 +171,18 @@ def draw_grid(win, rows, width):
 		for j in range(rows):
 			pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
 
-
+# Draw grid
 def draw(win, grid, rows, width):
 	win.fill(WHITE)
 
 	for row in grid:
-		for spot in row:
-			spot.draw(win)
+		for node in row:
+			node.draw(win)
 
 	draw_grid(win, rows, width)
 	pygame.display.update()
 
-
+# Returns node clicked
 def get_clicked_pos(pos, rows, width):
 	gap = width // rows
 	y, x = pos
@@ -187,20 +192,21 @@ def get_clicked_pos(pos, rows, width):
 
 	return row, col
 
-
+# Main 
 def main(win, width):
-	ROWS = 50
+	ROWS = 40
 	grid = make_grid(ROWS, width)
 
 	start = None
 	end = None
 
-	run = True
-	while run:
+	running = True
+
+	while running:
 		draw(win, grid, ROWS, width)
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
-				run = False
+				running = False
 
 			if pygame.mouse.get_pressed()[0]: # LEFT
 				pos = pygame.mouse.get_pos()
